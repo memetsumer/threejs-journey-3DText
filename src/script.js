@@ -14,42 +14,43 @@ const scene = new THREE.Scene();
  * Textures
  */
 const textureLoader = new THREE.TextureLoader();
-const matcapTexture = textureLoader.load("/textures/matcaps/5.png");
+
+const material = new THREE.MeshNormalMaterial();
 
 // Fonts
 const fontLoader = new FontLoader();
-fontLoader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-  const textGeometry = new TextGeometry("Mehmet Sumer", {
-    font: font,
-    size: 0.5,
-    height: 0.2,
-    curveSegments: 12,
-    bevelEnabled: true,
-    bevelThickness: 0.03,
-    bevelSize: 0.02,
-    bevelOffset: 0,
-    bevelSegments: 6,
-  });
+fontLoader.load("/fonts/koulen_regular.json", (font) => {
+  const textGeometry = new TextGeometry(
+    "Learning three.js",
+    {
+      font: font,
+      size: 0.7,
+      height: 0.2,
+      curveSegments: 20,
+      bevelEnabled: 6,
+      bevelThickness: 0.03,
+      bevelSize: 0.02,
+      bevelOffset: 0,
+      bevelSegments: 5,
+    }
+  );
 
   textGeometry.center();
 
-  const textMaterial = new THREE.MeshMatcapMaterial({
-    matcap: matcapTexture,
-  });
-
-  const text = new THREE.Mesh(textGeometry, textMaterial);
+  const text = new THREE.Mesh(textGeometry, material);
   scene.add(text);
 });
 
-const material = new THREE.MeshMatcapMaterial({
-  matcap: matcapTexture,
-});
-const geometry = new THREE.TorusBufferGeometry(1, 0.3, 16, 100);
+// const material = new THREE.MeshMatcapMaterial({
+//   matcap: matcapTexture,
+// });
+const donutGeometry = new THREE.TorusBufferGeometry(1, 0.3, 16, 100);
+const boxGeometry = new THREE.BoxBufferGeometry(1, 1, 1);
 
-let donutCount = 1000;
+let count = 600;
 
-for (let i = 0; i < donutCount; i++) {
-  const donut = new THREE.Mesh(geometry, material);
+for (let i = 0; i < count; i++) {
+  const donut = new THREE.Mesh(donutGeometry, material);
 
   donut.position.x = (Math.random() - 0.5) * 100;
   donut.position.y = (Math.random() - 0.5) * 100;
@@ -64,6 +65,24 @@ for (let i = 0; i < donutCount; i++) {
   donut.scale.set(randomScale, randomScale, randomScale);
 
   scene.add(donut);
+}
+
+for (let i = 0; i < count; i++) {
+  const box = new THREE.Mesh(boxGeometry, material);
+
+  box.position.x = (Math.random() - 0.5) * 100;
+  box.position.y = (Math.random() - 0.5) * 100;
+  box.position.z = (Math.random() - 0.5) * 100;
+
+  box.rotation.x = Math.random() * 2 * Math.PI;
+  box.rotation.y = Math.random() * 2 * Math.PI;
+  box.rotation.z = Math.random() * 2 * Math.PI;
+
+  const randomScale = Math.random();
+
+  box.scale.set(randomScale, randomScale, randomScale);
+
+  scene.add(box);
 }
 
 /**
@@ -100,12 +119,13 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.x = 1;
 camera.position.y = 1;
-camera.position.z = 2;
+camera.position.z = 5;
 scene.add(camera);
 
 // Controls
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
+controls.enableZoom = false;
 
 /**
  * Renderer
@@ -114,7 +134,7 @@ const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
 });
 // a good blue color
-renderer.setClearColor(0x231f20, 1);
+renderer.setClearColor(0x858ae3, 1);
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
